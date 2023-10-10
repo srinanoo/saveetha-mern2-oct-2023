@@ -1,50 +1,53 @@
 const fs = require('fs');
+const traineeFile = "./trainees.json";
 
 function getAllTrainees(req, res) {
-    res.send("All Trainees from Controller");
+    fs.readFile(traineeFile, 'utf8', (err, data) => {
+        if(err) res.send(err);
+
+        res.send(data);
+    });
 }
 
 function getTrainee(req, res) {
-    res.send("Specific Trainee from Controller");
+    fs.readFile(traineeFile, 'utf8', (err, data) => {
+        if(err) res.send(err);
+
+        let traineeId = req.params.id;
+
+        let results = [];
+        let existingTrainees = JSON.parse(data);
+
+        existingTrainees.forEach(v => {
+            if(v.id == traineeId) 
+                results.push(v);
+        });
+
+        if(results.length > 0)
+            res.send(results);
+        else 
+            res.send("No Trainees Found!");
+    });
 }
 
 const addTrainee = (req, res) => {
-
-    // fs.writeFileSync("sample.txt", "Another data updated...");
-
-    // fs.writeFile("sample2.txt", "Content added...", (err) => {
-    //     if(err) res.send(err);
-
-    //     res.send("Content added....")
-    // })
-
-    // fs.appendFileSync("sample1.txt", "Appended Data...");
-
-    // fs.appendFile("sample4.txt", "Content added...", (err) => {
-    //     if(err) res.send(err);
-
-    //     res.send("Content updated...");
-    // })
-
-    // fs.unlinkSync("sample4.txt");
-    // res.send("File Deleted");
-
-    // fs.unlink("sample2.txt", (err) => {
-    //     if(err) res.send(err);
-
-    //     res.send("File Deleted");
-    // })
-
-    // let data = fs.readFileSync("sample1.txt", "utf8");
-    // console.log(data);
-    // res.send(data);
-
-    fs.readFile("sample1.txt", "utf8", (err, data) => {
+    fs.readFile(traineeFile, 'utf8', (err, data) => {
         if(err) res.send(err);
-        res.send(data);
-    })
 
-    // res.send("Add New Trainee");
+        let existingTrainees = JSON.parse(data);
+        let newTrainee = req.body;
+        let matchedTrainees = existingTrainees.filter(v => v.id == newTrainee.id);
+        if(matchedTrainees.length > 0)
+            res.send("Trainee Already Exists!");
+        else
+            existingTrainees.push(newTrainee);
+
+        fs.writeFile(traineeFile, JSON.stringify(existingTrainees), (err) => {
+            if(err) res.send(err);
+
+            res.send("Trainee Added Successfully!");
+        })
+    });
 };
 
 const updateTrainee = (req, res) => {

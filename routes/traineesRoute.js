@@ -5,7 +5,7 @@ const {getAllTrainees, getTrainee, addTrainee, updateTrainee, deleteTrainee} = r
 
 router.get('/getAllTrainees', getAllTrainees);
 
-router.get("/getTrainee", getTrainee);
+router.get("/getTrainee/:id", getTrainee);
 
 router.post("/addTrainee", addTrainee);
 
