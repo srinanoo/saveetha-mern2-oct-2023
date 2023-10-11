@@ -36,17 +36,27 @@ const addTrainee = (req, res) => {
 
         let existingTrainees = JSON.parse(data);
         let newTrainee = req.body;
-        let matchedTrainees = existingTrainees.filter(v => v.id == newTrainee.id);
-        if(matchedTrainees.length > 0)
-            res.send("Trainee Already Exists!");
-        else
-            existingTrainees.push(newTrainee);
+
+        // let matchedTrainees = existingTrainees.filter(v => v.id == newTrainee.id);
+        // if(matchedTrainees.length > 0)
+        //     res.send("Trainee Already Exists!");
+        // else
+
+        let flag = false;
+        for(let i = 0; i < existingTrainees.length; i++) {
+            if(existingTrainees[i].id === newTrainee.id) {
+                flag = true;
+                break;
+            }
+        }
+
+        (flag) ? res.send("Trainee Already Exists!") : existingTrainees.push(newTrainee);
 
         fs.writeFile(traineeFile, JSON.stringify(existingTrainees), (err) => {
             if(err) res.send(err);
 
             res.send("Trainee Added Successfully!");
-        })
+        });
     });
 };
 
