@@ -1,10 +1,14 @@
 const express = require('express');
+const cors = require('cors');
 const PORT = 3500;
 
 const app = express();
 
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
+app.use(cors({
+    origin: ["http://127.0.0.1:5173", "http://localhost:5173"]
+}));
 
 // app.post('/jsonMethod', (req, res) => {
 //     console.log(req.body);
@@ -29,11 +33,12 @@ app.use(express.json());
 //     res.send("My first express application: after updating...");
 // });
 
-const traineeRoutes = require('./routes/traineesRoute')
+const traineeRoutes = require('./routes/traineesRoute');
+const auth = require("./middleware/auth");
 app.use("/trainees/", traineeRoutes);
 
-// app.use("/trainers/");
-// app.use("/batches/");
+// app.use("/trainers/", auth);
+// app.use("/batches/", auth);
 // app.use('/classes/');
 
 app.listen(PORT, () => {
